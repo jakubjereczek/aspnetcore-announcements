@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
-using WebApplication1.Data;
+using AnnouncementsApp.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using AnnouncementsApp.Models;
 
-namespace WebApplication1
+namespace AnnouncementsApp
 {
     public class Startup
     {
@@ -27,6 +28,9 @@ namespace WebApplication1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Ustawienie us³ugi bazodanowej
+            services.AddDbContext<AnnouncementContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnection")));
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DatabaseConnection")));
