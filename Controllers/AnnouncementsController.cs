@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AnnouncementsApp.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AnnouncementsApp.Controllers
 {
@@ -42,91 +44,38 @@ namespace AnnouncementsApp.Controllers
             }
         }
 
+        [HttpGet]
+        // Tylko dla zajerestrowanych akcja.
+        [Authorize]
+        public IActionResult Create()
+        {
+            ViewBag.CategoryId = new SelectList(db.Category, "CategoryId", "Name");
+            return View();
+        }
 
-        /*        // GET: api/Announcements
-                [HttpGet]
-                public async Task<ActionResult<IEnumerable<Announcement>>> GetAnnouncement()
-                {
-                    return await _context.Announcement.ToListAsync();
-                }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        // Tylko dla zajerestrowanych akcja.
+        [Authorize]
+        public async Task<IActionResult> Create(Announcement announcement)
+        {
+            // Zastosowanie walidacji, sprawdzneie czy wszystko jest ok.
+            if (ModelState.IsValid)
+            {
+                announcement.AddedDate = DateTime.Now;
 
-                // GET: api/Announcements/5
-                [HttpGet("{id}")]
-                public async Task<ActionResult<Announcement>> GetAnnouncement(int id)
-                {
-                    var announcement = await _context.Announcement.FindAsync(id);
+                // Email zalogowanego usera
+                announcement.Mail = User.Identity.Name;
+                db.Announcement.Add(announcement);
+                await db.SaveChangesAsync();
+                return RedirectToAction(nameof(Index)); // Przekierowujemy na akcje z listą
+            }
+            ViewBag.CategoryId = new SelectList(db.Category, "CategoryId", "Name"); // Musimy ponownie zwrocic liste kategorii, jesli formularz nie jest poprawny
 
-                    if (announcement == null)
-                    {
-                        return NotFound();
-                    }
+            // Jeśli nie jest poprawne, to zwracamy te samą stronę z wpisanymi danymi.
+            return View(announcement);
+        }
 
-                    return announcement;
-                }
 
-                // PUT: api/Announcements/5
-                // To protect from overposting attacks, enable the specific properties you want to bind to, for
-                // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-                [HttpPut("{id}")]
-                public async Task<IActionResult> PutAnnouncement(int id, Announcement announcement)
-                {
-                    if (id != announcement.AnnouncementId)
-                    {
-                        return BadRequest();
-                    }
-
-                    _context.Entry(announcement).State = EntityState.Modified;
-
-                    try
-                    {
-                        await _context.SaveChangesAsync();
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!AnnouncementExists(id))
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
-
-                    return NoContent();
-                }
-
-                // POST: api/Announcements
-                // To protect from overposting attacks, enable the specific properties you want to bind to, for
-                // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-                [HttpPost]
-                public async Task<ActionResult<Announcement>> PostAnnouncement(Announcement announcement)
-                {
-                    _context.Announcement.Add(announcement);
-                    await _context.SaveChangesAsync();
-
-                    return CreatedAtAction("GetAnnouncement", new { id = announcement.AnnouncementId }, announcement);
-                }
-
-                // DELETE: api/Announcements/5
-                [HttpDelete("{id}")]
-                public async Task<ActionResult<Announcement>> DeleteAnnouncement(int id)
-                {
-                    var announcement = await _context.Announcement.FindAsync(id);
-                    if (announcement == null)
-                    {
-                        return NotFound();
-                    }
-
-                    _context.Announcement.Remove(announcement);
-                    await _context.SaveChangesAsync();
-
-                    return announcement;
-                }
-
-                private bool AnnouncementExists(int id)
-                {
-                    return _context.Announcement.Any(e => e.AnnouncementId == id);
-                }*/
     }
 }

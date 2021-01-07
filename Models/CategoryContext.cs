@@ -6,23 +6,19 @@ using System.Threading.Tasks;
 
 namespace AnnouncementsApp.Models
 {
-    public class AnnouncementContext : DbContext {
+    public class AnnouncementContext : DbContext
+    {
         public AnnouncementContext(DbContextOptions<AnnouncementContext> options) : base(options)
         {
 
         }
         public DbSet<Announcement> Announcement { get; set; }
-        public DbSet<Category> Category { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Announcement>().HasKey(c => new
             {
                 c.AnnouncementId
-            });
-            modelBuilder.Entity<Category>().HasKey(c => new
-            {
-                c.CategoryId
             });
         }
 
