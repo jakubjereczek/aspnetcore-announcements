@@ -11,7 +11,6 @@ namespace AnnouncementsApp.Models
         {
 
         }
-
         public DbSet<Announcement> Announcement { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

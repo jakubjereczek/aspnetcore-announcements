@@ -1,8 +1,55 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<AnnouncementsApp.Models.Announcement>
+
+@{
+    ViewData["Title"] = "Lista ogłoszeń";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-left">
+    <h1 class="display-4">Ogłoszenia</h1>
+    @{
+        if (@Model.Count() == 0)
+        {
+            <h3>Brak ogłoszeń w bazie danych.</h3>
+        }
+    }
+
+    @foreach (var ann in Model)
+    {
+    <div class="shadow-sm p-3 mb-5 bg-white rounded">
+        <div class="row">
+            <div class="col col-sm-4">
+                <h5 class="font-weight-light text-center">@ann.Title</h5>
+                <div class="d-block border border-dark rounded" style="margin: 0px 1rem!important;">
+                    <p class="text-center m-2">
+                        @ann.Category.Name
+                    </p>
+                </div>
+            </div>
+            <div class="col col-sm-8">
+                @if (ann.Description.Length > 200)
+                {
+                    <p style="font-size: 1.1rem" class="">@ann.Description.Substring(0, 200)...</p>
+
+                }
+                else
+                {
+                    <p style="font-size: 1.1rem"> @ann.Description</p>
+
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col-sm-9">
+            </div>
+            <div class="col-6 col-sm-3">
+                <a class="text-white" asp-action="Details" asp-route-id="@ann.AnnouncementId">
+                    <button type="button m-2" class="btn btn-success text-white w-100 p-2">
+                        Wiecej informacji
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+    }
+
 </div>

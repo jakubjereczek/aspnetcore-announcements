@@ -1,0 +1,37 @@
+﻿@model AnnouncementsApp.Models.Announcement
+
+@{
+    ViewData["Title"] = "Informacje o ogloszeniu";
+}
+
+
+<div class="text-left ">
+      
+    <div>
+        <h1 class="display-4">Informacje</h1>
+        <div class="row border-dark">
+            <div class="col row shadow-sm p-3 mb-5 bg-white rounded m-2">
+                <h2 class="font-weight-light w-100">O ogłoszeniu</h2>
+                <p style="font-size: 1.3rem" class="w-100 m-0">Tytuł: @Model.Title</p>
+                <p style="font-size: 1.3rem" class="text-justify w-100 m-0">Opis: @Model.Description</p>
+                <p style="font-size: 1.3rem" class="w-100 m-0">Kategoria: @Model.Category.Name</p>
+            </div>
+            <div class="col row shadow-sm p-3 mb-5 bg-white rounded m-2">
+                <h2 class="font-weight-light">O autorze</h2>
+                <p style="font-size: 1.3rem" class="w-100 m-0">Data dodania: @Model.AddedDate</p>
+                <p style="font-size: 1.3rem" class="w-100 m-0">Author: @Model.Author</p>
+                <p style="font-size: 1.3rem" class="w-100 m-0">Miasto: @Model.City</p>
+                <p style="font-size: 1.3rem" class="w-100 m-0">Mail: @Model.Mail</p>
+                <p style="font-size: 1.3rem" class="w-100 m-0">Telefon: @Model.Telephone</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8"></div>
+            <div class="col-4">
+                <a asp-action="Index">
+                    <button type="button" class="btn btn-warning w-100">Wróć do listy</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

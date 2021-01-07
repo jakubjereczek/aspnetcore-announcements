@@ -15,12 +15,31 @@ namespace AnnouncementsApp.Controllers
 
         public AnnouncementsController(AnnouncementContext db)
         {
-            db = db;
+            this.db = db;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var model = db.Announcement.Include(e => e.Category).OrderBy(somebody => somebody.Title);
+            return View(model);
+        }
+
+        public async Task<IActionResult> DetailsAsync(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            // Include sluzy do "załadowania" tabeli Category.
+            var model = await db.Announcement.Include(e => e.Category).FirstOrDefaultAsync(acc => acc.AnnouncementId == id);
+            if (model != null)
+            {
+                return View(model);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
 
