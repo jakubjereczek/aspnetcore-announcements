@@ -24,6 +24,11 @@ namespace AnnouncementsApp.Controllers
         {
             ViewBag.Categories = new SelectList(db.Category, "CategoryId", "Name");
 
+            // Ciasteczko z wpisanym miastem
+            ViewBag.City = GetCity().City;
+            // Model FilterCity potrzebny do wygenrowania formularza
+            ViewBag.FilterCity = new FilterCity();
+
             // Brak kategorii - wyswietlenie wszystkiego
             if (id == null || id == 0)
             {
@@ -156,7 +161,7 @@ namespace AnnouncementsApp.Controllers
                 if (model.Mail != User.Identity.Name)
                     return NotFound();
 
-                ViewBag.CategoryId = new SelectList(db.Category, "CategoryId", "Name"); 
+                ViewBag.CategoryId = new SelectList(db.Category, "CategoryId", "Name");
                 return View(model);
             }
             return NotFound();
@@ -186,5 +191,46 @@ namespace AnnouncementsApp.Controllers
             var model = await db.Announcement.FindAsync(id);
             return View(model);
         }
+
+
+
+        // CIASTECZKA 
+        // Zastosowanie mechanizmu ciasterczek - dla miasta, po którym będziemy potem filtrować.
+
+        [HttpPost]
+        public ActionResult RefreshCity(FilterCity filterCity)
+        {
+            if (filterCity.City == null) {
+                filterCity.City = "";
+            }
+            var city = GetCity();
+            city.City = filterCity.City;
+            SetCity(city);
+
+            return RedirectToAction("Index");
+        }
+
+        public FilterCity GetCity()
+        {
+            var filterCity = new FilterCity();
+
+            if (Request.Cookies["city"] != null)
+            {
+                filterCity.City = Request.Cookies["city"].ToString();
+            }
+            else
+            {
+                filterCity.City = "";
+            }
+            return filterCity;
+        }
+
+        public void SetCity(FilterCity filterCity)
+        {
+            CookieOptions options = new CookieOptions();
+            options.Expires = DateTime.Now.AddDays(1); // Ciasteczko istnieje dzień, a bez tego jest tymczasowe - na czas trwania apk.
+            Response.Cookies.Append("city", filterCity.City, options);
+        }
     }
+
 }

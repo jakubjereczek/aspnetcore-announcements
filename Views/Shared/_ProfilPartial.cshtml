@@ -1,0 +1,18 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="row alert alert-warning m-1 " role="alert">
+        <p style="font-size: 1.2rem">Witaj, <span class="font-weight-bold">@User.Identity.Name</span>. Jesteś zalogowany, możesz korzystać z funckjonalności Announcements.<p />
+
+    </div>
+}
+else
+{
+<div class="row alert alert-danger m-1 " role="alert">
+
+    <p style="font-size: 1.2rem">Jesteś niezalogowany, aby korzystać z pełni funkcji Announcements zaloguj się.<p />
+</div>
+}
