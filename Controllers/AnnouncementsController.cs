@@ -20,10 +20,22 @@ namespace AnnouncementsApp.Controllers
             this.db = db;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? id = null)
         {
-            var model = db.Announcement.Include(e => e.Category).OrderBy(somebody => somebody.Title);
-            return View(model);
+            ViewBag.Categories = new SelectList(db.Category, "CategoryId", "Name");
+
+            // Brak kategorii - wyswietlenie wszystkiego
+            if (id == null || id == 0)
+            {
+                var model = db.Announcement.Include(e => e.Category).OrderBy(somebody => somebody.Title);
+                return View(model);
+            }
+            else
+            {
+                // Wyswietlenie dla kategorii
+                var model = db.Announcement.Include(e => e.Category).Where(somebody => somebody.CategoryId == id);
+                return View(model);
+            }
         }
 
         public async Task<IActionResult> DetailsAsync(int id)
@@ -76,6 +88,103 @@ namespace AnnouncementsApp.Controllers
             return View(announcement);
         }
 
+        [HttpGet]
+        [Authorize]
+        // Wyswietlanie modelu na podstawie ID - dla autora ogloszenia.
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var model = await db.Announcement.Include(e => e.Category).FirstOrDefaultAsync(acc => acc.AnnouncementId == id);
+            if (model != null)
+            {
+                // Jesli autorem wpisu NIE jest zalogowany
+                if (model.Mail != User.Identity.Name)
+                {
+                    return NotFound();
+                }
 
+                return View(model);
+            }
+            return NotFound();
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                var model = await db.Announcement.FindAsync(Int32.Parse(id));
+                // Jesli autorem wpisu jest zalogowany
+                if (model.Mail == User.Identity.Name)
+                {
+                    db.Announcement.Remove(model);
+                    await db.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                return NotFound();
+
+            }
+            catch (DbUpdateException err)
+            {
+                return RedirectToAction("Delete", new
+                {
+                    Id = id,
+                    saveChangesError = true
+                });
+            }
+
+        }
+
+
+
+        [HttpGet]
+        [Authorize]
+        // Wyswietlanie modelu na podstawie ID - dla autora ogloszenia.
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+                return NotFound();
+            var model = await db.Announcement.Include(e => e.Category).FirstOrDefaultAsync(acc => acc.AnnouncementId == id);
+            if (model != null)
+            {
+                // Jesli autorem wpisu NIE jest zalogowany
+                if (model.Mail != User.Identity.Name)
+                    return NotFound();
+
+                ViewBag.CategoryId = new SelectList(db.Category, "CategoryId", "Name"); 
+                return View(model);
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int? id, Announcement announcement)
+        {
+            ViewBag.CategoryId = new SelectList(db.Category, "CategoryId", "Name");
+
+            if (ModelState.IsValid && id != null)
+            {
+                try
+                {
+                    announcement.AnnouncementId = (int)id; // ID JAK POZOSTALE
+                    db.Announcement.Update(announcement);
+                    //db.Entry(announcement).State = EntityState.Modified;
+                    await db.SaveChangesAsync();
+                    return RedirectToAction("Details", new { id });
+                }
+                catch (DbUpdateException err)
+                {
+                    ModelState.AddModelError("", "Bląd z edycją danych");
+                }
+            }
+            var model = await db.Announcement.FindAsync(id);
+            return View(model);
+        }
     }
 }

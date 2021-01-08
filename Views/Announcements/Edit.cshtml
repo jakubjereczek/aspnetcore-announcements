@@ -1,0 +1,95 @@
+﻿@model AnnouncementsApp.Models.Announcement
+
+@{
+    ViewData["Title"] = "Edycja ogloszenia";
+}
+
+
+<div class="w-100">
+    <div>
+        <h1 class="display-4">Edycja ogloszenia</h1>
+        <div class="row border-dark row shadow-sm p-3 mb-5 bg-white rounded m-2">
+            @using (Html.BeginForm("Edit", "Announcements", FormMethod.Post, new { style = "margin: 0 auto; width: 90%;" }))
+            {
+                <div class="form-group row text-center">
+                    <label class="col-sm-4 col-form-label">Tytuł</label>
+                    <div class="col-sm-8 text-center">
+                        @Html.TextBoxFor(a => a.Title)
+                    </div>
+                </div>
+                <p class="font-weight-bold text-danger">
+                    @Html.ValidationMessageFor(a => a.Title)
+                </p>
+                <div class="form-group row text-center">
+                    <label class="col-sm-4 col-form-label">Opis</label>
+                    <div class="col-sm-8">
+                        @Html.TextAreaFor(a => a.Description)
+                    </div>
+                </div>
+                <p class="font-weight-bold text-danger">
+                    @Html.ValidationMessageFor(a => a.Description)
+                </p>
+                <div class="form-group row text-center">
+                    <label class="col-sm-4 col-form-label ">Kategoria</label>
+                    <div class="col-sm-8">
+                        @Html.DropDownList("CategoryId")
+                    </div>
+                </div>
+                <p class="font-weight-bold text-danger">
+                    @Html.ValidationMessageFor(model => model.CategoryId)
+                </p>
+                <div class="form-group row text-center">
+                    <label class="col-sm-4 col-form-label">Autor</label>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(a => a.Author)
+                    </div>
+                </div>
+                <p class="font-weight-bold text-danger">
+                    @Html.ValidationMessageFor(a => a.Author)
+                </p>
+                <div class="form-group row text-center">
+                    <label class="col-sm-4 col-form-label">Miasto</label>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(a => a.City)
+                    </div>
+                </div>
+                <p class="font-weight-bold text-danger">
+                    @Html.ValidationMessageFor(a => a.City)
+                </p>
+                <div class="form-group row text-center">
+                    <label class="col-sm-4 col-form-label">Adres e-mail</label>
+                    <div class="col-sm-8">
+                        @Html.HiddenFor(a => a.Mail)
+                        @User.Identity.Name
+                    </div>
+                </div>
+                <p class="font-weight-bold text-danger">
+                    @Html.ValidationMessageFor(a => a.Mail)
+                </p>
+                <div class="form-group row text-center">
+                    <label class="col-sm-4 col-form-label">Telefon</label>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(a => a.Telephone)
+                    </div>
+                </div>
+                <p class="font-weight-bold text-danger">
+                    @Html.ValidationMessageFor(a => a.Telephone)
+                </p>
+
+                <div class="form-group row text-center">
+                    <label class="col-sm-4 col-form-label">Data dodania</label>
+                    <div class="col-sm-8">
+                        @Html.HiddenFor(a => a.AddedDate)
+                        @Model.AddedDate
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-8"></div>
+                    <div class="col-sm-4">
+                        <input class="btn btn-success w-100" type="submit" value="Dodaj" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

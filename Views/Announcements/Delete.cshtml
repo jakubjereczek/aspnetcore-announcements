@@ -1,0 +1,28 @@
+﻿@model AnnouncementsApp.Models.Announcement
+
+@{
+    ViewData["Title"] = "Usuwanie ogłoszenia";
+}
+
+<div class="text-left">
+    <div class="border-dark shadow-sm p-3 mb-5">
+        <h1 class="display-4">Czy jesteś pewny, że chcesz usunąć ogłoszenie?</h1>
+        <div class="row">
+            <div class="col row bg-white rounded m-3">
+                <p style="font-size: 1.6rem" class="w-100">Tytuł: @Model.Title (@Model.Category.Name)</p>
+                <p style="font-size: 1.6rem" class="text-justify w-100">Opis: @Model.Description</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a asp-action="Index">
+                    <button type="button" class="btn btn-warning w-100">Wróć do listy</button>
+                </a>
+            </div>
+            <div class="col">
+                <form style="width: 100%" asp-action="Delete">
+                    <input type="submit" value="Usuń" class="btn btn-danger w-100" />
+                </form>
+            </div>
+        </div>
+</div>

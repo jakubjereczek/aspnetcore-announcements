@@ -6,6 +6,32 @@
 
 <div class="text-left">
     <h1 class="display-4">Ogłoszenia</h1>
+    <!--Kategorie-->
+    <div class="row  p-3 ">
+        @{
+
+            <a class="text-white m-1" asp-action="Index" asp-route-id=0>
+                <button type="button m-2" class="btn btn-info text-white w-100">
+                    Wszystkie ogłoszenia
+                </button>
+            </a>
+            if (ViewBag.Categories != null)
+            {
+                foreach (var cat in ViewBag.Categories)
+                {
+                    <a class="text-white m-1" asp-action="Index" asp-route-id=@cat.Value>
+                        <button type="button m-2" class="btn btn-info text-white w-100">
+                            @cat.Text
+                        </button>
+                    </a>
+                }
+
+            }
+
+        }
+    </div>
+
+
     @{
         if (@Model.Count() == 0)
         {
@@ -15,63 +41,63 @@
 
     @foreach (var ann in Model)
     {
-    <div class="shadow-sm p-3 mb-5 bg-dark rounded">
-        <div class="row">
-            <div class="col col-sm-4">
-                <h5 class="font-weight-light text-light text-center">@ann.Title</h5>
-                <div class="d-block border border-light bg-light rounded" style="margin: 0px 1rem!important;">
-                    <p class="text-center m-1">
-                        @ann.Category.Name
-                    </p>
+        <div class="shadow-sm p-3 mb-5 bg-dark rounded">
+            <div class="col">
+                <div class="row">
+                    <div class="text-center m-1 d-block border border-light text-dark bg-light rounded w-100">
+                        <p class="m-2" style="font-size: 1.2rem">@ann.Category.Name, miasto: @ann.City</p>
+                    </div>             
+                    <h3 class="font-weight-bold text-light text-center">
+                        @ann.Title
+                    </h3>
+                </div>
+                <div class="row">
+                    @if (ann.Description.Length > 200)
+                    {
+                        <p style="font-size: 1.1rem" class="text-light">@ann.Description.Substring(0, 200)...</p>
+
+                    }
+                    else
+                    {
+                        <p style="font-size: 1.1rem" class="text-light"> @ann.Description</p>
+
+                    }
                 </div>
             </div>
-            <div class="col col-sm-8">
-                @if (ann.Description.Length > 200)
+            <div class="row">
+                <!-- Jeśli jesteś autorem wyświetla Ci się button Edytuj, Delete-->
+                @if (User.Identity.Name == ann.Mail)
                 {
-                    <p style="font-size: 1.1rem" class="text-light">@ann.Description.Substring(0, 200)...</p>
-
+                    <div class="col-4 mt-2">
+                        <a class="text-white" asp-action="Edit" asp-route-id="@ann.AnnouncementId">
+                            <button type="button m-2" class="btn btn-warning text-white w-100">
+                                Edytuj
+                            </button>
+                        </a>
+                    </div>
+                    <div class="col-4 mt-2">
+                        <a class="text-white" asp-action="Delete" asp-route-id="@ann.AnnouncementId">
+                            <button type="button m-2" class="btn btn-danger text-white w-100">
+                                Usuń
+                            </button>
+                        </a>
+                    </div>
                 }
                 else
                 {
-                    <p style="font-size: 1.1rem" class="text-light"> @ann.Description</p>
+                    <div class="col-8">
+                    </div>
 
                 }
-            </div>
-        </div>
-        <div class="row">
-            <!-- Jeśli jesteś autorem wyświetla Ci się button Edytuj, Delete-->
-            @if (User.Identity.Name == ann.Mail)
-            {
                 <div class="col-4 mt-2">
-                    <a class="text-white" asp-action="Edit" asp-route-id="@ann.AnnouncementId">
-                        <button type="button m-2" class="btn btn-warning text-white w-100">
-                            Edytuj
+                    <a class="text-white" asp-action="Details" asp-route-id="@ann.AnnouncementId">
+                        <button type="button m-2" class="btn btn-success text-white w-100">
+                            Wiecej informacji
                         </button>
                     </a>
                 </div>
-                <div class="col-4 mt-2">
-                    <a class="text-white" asp-action="Delete" asp-route-id="@ann.AnnouncementId">
-                        <button type="button m-2" class="btn btn-danger text-white w-100">
-                            Usuń
-                        </button>
-                    </a>
-                </div>
-            }
-            else
-            {
-               <div class="col-8">
-               </div>
-
-            }
-            <div class="col-4 mt-2">
-                <a class="text-white" asp-action="Details" asp-route-id="@ann.AnnouncementId">
-                    <button type="button m-2" class="btn btn-success text-white w-100">
-                        Wiecej informacji
-                    </button>
-                </a>
             </div>
         </div>
-    </div>
     }
 
 </div>
